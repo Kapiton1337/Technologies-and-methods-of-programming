@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Моя тестовая страница</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div>Моя страница!
+</div>
+</body>
+<script>
+    function enc(str, key) {
+        var length = key.length;
+        var keyList = key.split("");
+        var s = "", bit, bit1, bit2, bit3, bit4;
+        for (var i = 0; i < str.length; i++) {
+            bit = str.charCodeAt(i); // Получить кодировку Unicode символа (числа)
+            bit1 = bit % length;
+            bit = (bit - bit1) / length;
+            bit2 = bit % length;
+            bit = (bit - bit2) / length;
+            bit3 = bit % length;
+            bit = (bit - bit3) / length;
+            bit4 = bit % length;
+            // расположение ключа bit1, bit2, bit3, bit4
+            // keyList [bit4] + keyList [bit3] + keyList [bit2] + keyList [bit1] Каждый символ в строке соответствует четырем символам секретного ключа
+            s += keyList[bit4] + keyList[bit3] + keyList[bit2] + keyList[bit1];
+        }
+        return s;
+    }
+
+    function dec(str, key) {
+        var length = key.length;
+        var bit, bit1, bit2, bit3, bit4, j = 0, s;
+        var s = new Array(Math.floor(str.length / 4));
+        var result = [];
+        bit = s.length;
+        for (var i = 0; i < bit; i++) {
+            bit1 = key.indexOf(str.charAt(j));
+            j++;
+            bit2 = key.indexOf(str.charAt(j));
+            j++;
+            bit3 = key.indexOf(str.charAt(j));
+            j++;
+            bit4 = key.indexOf(str.charAt(j));
+            j++;
+            // бит1, бит2, бит3, бит4 Положение каждых четырех ключевых символов соответствует одному символу строки
+            s[i] = bit1 * length * length * length + bit2 * length * length + bit3 * length + bit4;
+            // бит1 * длина * длина * длина + бит2 * длина * длина + бит3 * длина + бит4 восстанавливают кодировку Unicode для каждого символа строки
+            result.push(String.fromCharCode(s [i])); // Восстановить данные из кодировки Unicode
+        }
+        // Восстановить символы
+        return result.join("");
+    }
+
+    /////////////////////////////////////////////////////////////////
+
+    const user_pswrd = prompt("Введите пароль");
+    const secret_key = prompt("Введите ключ");
+
+    const pswrd = "keekke2eke3kke2eke3kke2e";
+
+    crypted_user_pswrd = enc(user_pswrd, secret_key);
+
+    if (crypted_user_pswrd != pswrd) {
+        const prevent = () => false;
+
+        document.ondragstart = prevent;
+        document.onselectstart = prevent;
+        document.oncontextmenu = prevent;
+
+        document.onkeydown = (e) => {
+            console.log(e);
+            if (e.ctrlKey && (e.code == "KeyS" || e.code == "KeyU"))
+                return false;
+        }
+    }
+
+</script>
+</html>
