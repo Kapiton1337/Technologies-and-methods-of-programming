@@ -18,7 +18,7 @@ const dataScript = "const TIME_PERIOD = 5;\n" +
     "const userNameArr = process.argv.slice(2);\n" +
     "const userName = userNameArr.join(\" \");\n" +
     "\n" +
-    "const config = path.resolve(__dirname, \"../\", \"Programm_Data\", \"config.txt\");\n" +
+    "const config = path.resolve(__dirname, \"../\", \"Program_Data\", \"config.txt\");\n" +
     "const namesFile = path.resolve(__dirname, \"Names.txt\");\n" +
     "\n" +
     "const readConfigAsync = async (config) => {\n" +
@@ -38,7 +38,7 @@ const dataScript = "const TIME_PERIOD = 5;\n" +
     "                const remExec = EXEC_LIMIT - spentExec;\n" +
     "\n" +
     "                if(spentExec > EXEC_LIMIT){\n" +
-    "                    reject(\"LIMIT\");\n" +
+    "                    reject(\"You should buy full version of our program\");\n" +
     "                }\n" +
     "\n" +
     "                if(elapsedTime > TIME_PERIOD){\n" +
@@ -113,7 +113,27 @@ const createDir = async (userPath) => {
     return new Promise((resolve, reject) => {
         fs.mkdir(userPath, (err) => {
             if(err){
-                reject(err);
+                switch (err.code) {
+                    case "EEXIST":
+                    {
+                        console.log("Dir already exist " + userPath);
+                        resolve(userPath);
+                    }
+                }
+            }
+            else {
+                resolve(userPath);
+            }
+        })
+        fs.mkdir(path.resolve(__dirname, "Program_Data"), (err) => {
+            if(err){
+                switch (err.code) {
+                    case "EEXIST":
+                    {
+                        console.log("Dir already exist " + userPath);
+                        resolve(userPath);
+                    }
+                }
             }
             else {
                 resolve(userPath);
@@ -134,11 +154,13 @@ const createFiles = async (userPath) => {
                 console.log(err);
             }
         })
-        fs.writeFile(path.resolve(__dirname, "Programm_Data", "config.txt"), "0\n0", (err)=>{
-            if(err){
-                reject(err.code);
-            }
-        })
+        if(!fs.existsSync(path.resolve(__dirname, "Program_Data", "config.txt"))){
+            fs.writeFile(path.resolve(__dirname, "Program_Data", "config.txt"), "0\n0", (err)=>{
+                if(err){
+                    console.log(err);
+                }
+            })
+        }
     })
 }
 
@@ -146,13 +168,5 @@ rl()
     .then((userPath)=>{return createDir(userPath)})
     .then((userPath)=>{return createFiles(userPath)})
     .catch((err)=>{
-        switch (err) {
-            case "ENOENT": {
-                fs.mkdir(path.resolve(__dirname, "Programm_Data"), (err) => {
-                    if (err) {
-                        console.log(err);
-                    }
-                })
-            }
-        }
+        console.log(err);
     })
