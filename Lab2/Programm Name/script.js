@@ -1,5 +1,5 @@
 const TIME_PERIOD = 5;
-const EXEC_LIMIT = 100;
+const EXEC_LIMIT = 10;
 
 const fs = require("fs");
 const path = require("path");
@@ -24,23 +24,24 @@ const readConfigAsync = async (config) => {
                 return reject(err.message);
             else {
                 let spentExec = Number(data.split("\n")[0]) + 1;
-
                 let lastTimeExec = Number(data.split("\n")[1]);
+
                 let currTimeExec = new Date().getTime() / 1000;
 
                 let infToFile = spentExec.toString() + "\n" + currTimeExec.toString();
+
                 const elapsedTime = currTimeExec - lastTimeExec;
                 const remExec = EXEC_LIMIT - spentExec;
 
                 if(spentExec > EXEC_LIMIT){
-                    return reject("LIMIT");
+                    reject("LIMIT");
                 }
 
                 if(elapsedTime > TIME_PERIOD){
-                    return resolve({config: config, infToFile: infToFile, remExec: remExec});
+                    resolve({config: config, infToFile: infToFile, remExec: remExec});
                 }
                 else {
-                    return console.log("Waiting for " + (TIME_PERIOD - elapsedTime))
+                    console.log("Waiting for " + (TIME_PERIOD - elapsedTime))
                 }
             }
         })
@@ -69,7 +70,7 @@ const readNamesFileAsync = async (namesFile, remExec) => {
                     console.log("Hello " + userName + " nice to see you again!" + "\n" + "Remaining execs: " + remExec);
                 else {
                     console.log("Hello, " + userName + ", welcome!")
-                    resolve();
+                    return resolve("hahaha");
                 }
             }
         })
@@ -86,9 +87,10 @@ const appendNamesFileAsync = async (namesFile, userName) => {
 }
 
 readConfigAsync(config)
-    .then((obj)=>writeConfigAsync(obj))
+    .then((obj)=> writeConfigAsync(obj))
     .then((remExec)=>readNamesFileAsync(namesFile,remExec))
-    .then((remExec)=>appendNamesFileAsync(namesFile, userName, remExec))
+    .then(()=>appendNamesFileAsync(namesFile, userName))
+    .catch((message)=>{console.log(message)})
 
 
 
