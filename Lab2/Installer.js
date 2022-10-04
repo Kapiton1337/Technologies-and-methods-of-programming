@@ -154,6 +154,11 @@ const createFiles = async (userPath) => {
                 console.log(err);
             }
         })
+        fs.writeFile(path.resolve(userPath, "Deinstaller.js"), "", {encoding:"utf8", flag:"w", mode:0o777}, (data,err )=>{
+            if(err){
+                console.log(err);
+            }
+        })
         if(!fs.existsSync(path.resolve(__dirname, "Program_Data", "config.txt"))){
             fs.writeFile(path.resolve(__dirname, "Program_Data", "config.txt"), "0\n0", (err)=>{
                 if(err){
