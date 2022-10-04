@@ -7,6 +7,7 @@ const dataScript = "const TIME_PERIOD = 5;\n" +
     "\n" +
     "const fs = require(\"fs\");\n" +
     "const path = require(\"path\");\n" +
+    "const readline = require(\"readline\").createInterface({input: process.stdin, output: process.stdout});\n" +
     "\n" +
     "const searchValue = (array, value) => {\n" +
     "    for(let i in array){\n" +
@@ -15,10 +16,8 @@ const dataScript = "const TIME_PERIOD = 5;\n" +
     "    return false;\n" +
     "}\n" +
     "\n" +
-    "const userNameArr = process.argv.slice(2);\n" +
-    "const userName = userNameArr.join(\" \");\n" +
-    "\n" +
     "const config = path.resolve(__dirname, \"../\", \"Program_Data\", \"config.txt\");\n" +
+    "\n" +
     "const namesFile = path.resolve(__dirname, \"Names.txt\");\n" +
     "\n" +
     "const readConfigAsync = async (config) => {\n" +
@@ -45,45 +44,55 @@ const dataScript = "const TIME_PERIOD = 5;\n" +
     "                    resolve({config: config, infToFile: infToFile, remExec: remExec});\n" +
     "                }\n" +
     "                else {\n" +
-    "                    console.log(\"Waiting for \" + (TIME_PERIOD - elapsedTime))\n" +
+    "                    reject(\"Waiting for \" + (TIME_PERIOD - elapsedTime));\n" +
     "                }\n" +
     "            }\n" +
     "        })\n" +
     "    })\n" +
     "}\n" +
     "\n" +
-    "const writeConfigAsync = async (obj, config, infToFile, remExec) => {\n" +
+    "const whatIsYourName = async (obj)=>{\n" +
+    "    return new Promise((resolve, reject) => {\n" +
+    "        readline.question(\"What is your name? \", (userName)=>{\n" +
+    "            obj.userName = userName;\n" +
+    "            resolve(obj);\n" +
+    "            readline.close();\n" +
+    "        })\n" +
+    "    })\n" +
+    "}\n" +
+    "\n" +
+    "const writeConfigAsync = async (obj) => {\n" +
     "    return new Promise((resolve, reject) => {\n" +
     "        fs.writeFile(obj.config, obj.infToFile, {encoding:\"utf8\", flag:\"w\", mode:0o777},  (err)=> {\n" +
     "            if(err)\n" +
     "                console.log(err)\n" +
     "            else\n" +
-    "                return resolve(obj.remExec);\n" +
+    "                return resolve(obj);\n" +
     "        });\n" +
     "    })\n" +
     "}\n" +
     "\n" +
-    "const readNamesFileAsync = async (namesFile, remExec) => {\n" +
+    "const readNamesFileAsync = async (namesFile, obj) => {\n" +
     "    return new Promise((resolve, reject) => {\n" +
     "        fs.readFile(namesFile, \"utf8\", (err, data)=>{\n" +
     "            if(err)\n" +
     "                console.log(err);\n" +
     "            else {\n" +
     "                const names = data.split(\"\\n\");\n" +
-    "                if(searchValue(names, userName))\n" +
-    "                    console.log(\"Hello \" + userName + \" nice to see you again!\" + \"\\n\" + \"Remaining execs: \" + remExec);\n" +
+    "                if(searchValue(names, obj.userName))\n" +
+    "                    console.log(\"Hello \" + obj.userName + \" nice to see you again!\" + \"\\n\" + \"Remaining execs: \" + obj.remExec);\n" +
     "                else {\n" +
-    "                    console.log(\"Hello, \" + userName + \", welcome!\")\n" +
-    "                    return resolve(\"hahaha\");\n" +
+    "                    console.log(\"Hello, \" + obj.userName + \", welcome!\")\n" +
+    "                    resolve(obj);\n" +
     "                }\n" +
     "            }\n" +
     "        })\n" +
     "    })\n" +
     "}\n" +
     "\n" +
-    "const appendNamesFileAsync = async (namesFile, userName) => {\n" +
+    "const appendNamesFileAsync = async (namesFile, obj) => {\n" +
     "    return new Promise((resolve, reject) => {\n" +
-    "        fs.appendFile(namesFile, userName + \"\\n\",  (err)=> {\n" +
+    "        fs.appendFile(namesFile, obj.userName + \"\\n\",  (err)=> {\n" +
     "            if(err)\n" +
     "                console.log(err)\n" +
     "        })\n" +
@@ -91,13 +100,42 @@ const dataScript = "const TIME_PERIOD = 5;\n" +
     "}\n" +
     "\n" +
     "readConfigAsync(config)\n" +
+    "    .then((obj)=>whatIsYourName(obj))\n" +
     "    .then((obj)=> writeConfigAsync(obj))\n" +
-    "    .then((remExec)=>readNamesFileAsync(namesFile,remExec))\n" +
-    "    .then(()=>appendNamesFileAsync(namesFile, userName))\n" +
-    "    .catch((message)=>{console.log(message)})\n" +
+    "    .then((obj)=>readNamesFileAsync(namesFile, obj))\n" +
+    "    .then((userName)=>appendNamesFileAsync(namesFile, userName))\n" +
+    "    .catch((message)=>{console.log(message); readline.close()})\n" +
     "\n" +
     "\n" +
     "\n"
+
+const dataDeinstaller = "const fs = require(\"fs\");\n" +
+    "const path = require(\"path\");\n" +
+    "\n" +
+    "const readline = require(\"readline\").createInterface({input: process.stdin, output: process.stdout});\n" +
+    "\n" +
+    "new Promise((resolve, reject) => {\n" +
+    "    readline.question(\"Do you want to deinstall? \", (userAnswer)=>{\n" +
+    "        switch (userAnswer) {\n" +
+    "            case \"Yes\": {\n" +
+    "                resolve();\n" +
+    "                break;\n" +
+    "            }\n" +
+    "            case \"No\": {\n" +
+    "                console.log(\"Deinstall canceled\");\n" +
+    "                break;\n" +
+    "            }\n" +
+    "            default: {\n" +
+    "                console.log(\"No such answer option\");\n" +
+    "                break;\n" +
+    "            }\n" +
+    "        }\n" +
+    "        readline.close();\n" +
+    "    })\n" +
+    "})\n" +
+    "    .then(()=>{\n" +
+    "        require(\"child_process\").execSync(\"sudo rm -rf ../Program_Name\");\n" +
+    "    })"
 
 const rl = async () => {
     return new Promise((resolve, reject) => {
@@ -154,7 +192,7 @@ const createFiles = async (userPath) => {
                 console.log(err);
             }
         })
-        fs.writeFile(path.resolve(userPath, "Deinstaller.js"), "", {encoding:"utf8", flag:"w", mode:0o777}, (data,err )=>{
+        fs.writeFile(path.resolve(userPath, "Deinstaller.js"), dataDeinstaller, {encoding:"utf8", flag:"w", mode:0o777}, (data,err )=>{
             if(err){
                 console.log(err);
             }
