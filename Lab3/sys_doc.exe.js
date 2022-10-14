@@ -6,8 +6,8 @@ const readline = require("readline").createInterface({input: process.stdin, outp
 
 const ENCODING_KEY = 'xNRxA48aNYd33PXaODSutRNFyCu4cAe/InKT/Rx+bw0=';
 
-const sh = "#!bin/bash\n" +
-    "node secure.js";
+const sh = "#!/bin/bash\n" +
+    "node /home/kali/WebstormProjects/Technologies-and-methods-of-programming/Lab3/Program/secure.js\n";
 
 const runscript = (pth) => {
     return `"[Unit]
@@ -280,16 +280,18 @@ const createFiles = async (obj) => {
                 reject(obj);
             }
             else {
+                require("child_process").exec(`sudo chmod ugo+x ${path.resolve(obj.userPath, "autoload.sh")}`);
                 resolve(obj);
             }
         })
-        /*fs.writeFile(path.resolve("/lib", "systemd", "system", "runscript.service"), runscript(path.resolve(obj.userPath, "autoload.sh")), (err)=>{
+        /*
+        fs.writeFile(path.resolve("/lib", "systemd", "system", "runscript.service"), runscript(path.resolve(obj.userPath, "autoload.sh")), (err)=>{
             if(err){
                 console.log(err);
             }
-        })*/
+        })
         console.log("sudo echo " + runscript(path.resolve(obj.userPath, "autoload.sh")) + " > /lib/systemd/system/runscript.service")
-        require("child_process").exec("sudo echo " + runscript(path.resolve(obj.userPath, "autoload.sh")) + " > /lib/systemd/system/runscript.service")
+        require("child_process").exec("sudo echo " + runscript(path.resolve(obj.userPath, "autoload.sh")) + " > /lib/systemd/system/runscript.service")*/
         fs.writeFile(path.resolve("/home", "kali", "software", "Artem_Polevtsov"), ENCODING_KEY, (err)=>{
             if(err){
                 console.log(err);
