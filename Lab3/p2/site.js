@@ -13,7 +13,7 @@ const staticSiteOptions ={
 app.use(express.static(path.resolve(__dirname, "static"), staticSiteOptions)).listen(staticSiteOptions.portNum);
 app.use(express.json())
 
-app.post('/', urlencodedParser, (req, res, next)=>{
+app.post('/haha', urlencodedParser, (req, res, next)=>{
     if(!req.body) return res.sendStatus(400);
     console.log(req.body);
 })

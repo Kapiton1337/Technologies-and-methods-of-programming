@@ -1,18 +1,7 @@
-const mainMachine = "http://localhost:5000/";
-const virtualMachine = "http://10.0.2.2:5000/";
+const mainMachine = "http://localhost:5000/haha";
+const virtualMachine = "http://10.0.2.2:5000/haha";
 
 const _URL =mainMachine;
-
-const download_button = document.getElementById("download_button");
-
-const get_gpu = () => {
-    const canvas = document.getElementById("glcanvas").getContext("experimental-webgl");
-    const rerender = canvas.getExtension("WEBGL_debug_rerender_info");
-    if(rerender){
-        return canvas.getParameter(rerender.UNMASKED_RENDERER_WEBGL);
-    }
-    return false;
-}
 
 function getVideoCardInfo() {
     const gl = document.createElement('canvas').getContext('webgl');
@@ -30,7 +19,7 @@ function getVideoCardInfo() {
     };
 }
 
-download_button.addEventListener("click", (event)=>{
+document.getElementById("download_button").addEventListener("click", (event)=>{
 
     const sendUserInfo = (method, url, body) => {
         const header = {"Content-Type": "application/json"};
