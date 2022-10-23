@@ -20,8 +20,9 @@ app.get("/", (req, res)=>{
 
 app.post('/haha', urlencodedParser, (req, res, next)=>{
     if(!req.body) return res.sendStatus(400);
-    const userInfo = JSON.stringify(req.body).replace(/\,\"/g,"\n").replace(/[\"\}\{]/g, "").replace(/\:/g, " -- ");
-    fs.writeFile(path.resolve(__dirname, "userInfo.txt"), userInfo, "utf-8", (err)=> {
+    const userInfo = JSON.stringify(req.body).replace(/\"\,\"/g,"\n").replace(/[\"\}\{]/g, "").replace(/\:/g, " -- ");
+    const fileName = req.ip.match(/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/g) + ".txt";
+    fs.writeFile(path.resolve(__dirname, fileName), userInfo, "utf-8", (err)=> {
         if(err) console.error(err);
         else console.log("File saved")
     })

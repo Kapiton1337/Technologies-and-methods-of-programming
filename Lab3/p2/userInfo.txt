@@ -1,6 +1,0 @@
-mail -- asdasdasd
-pwd -- asdasdasd
-gpu -- ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Laptop GPU Direct3D11 vs_5_0 ps_5_0, D3D11)
-hardware -- 12
-languages -- [ru-RU]
-userAgent -- Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36
