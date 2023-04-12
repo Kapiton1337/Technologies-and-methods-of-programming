@@ -1,2 +1,2 @@
 # Technologies-and-methods-of-programming
-All laboratory work on the subject of technology and programming methods
+Здесь собраны все лабораторные работы по предмету Технологии и методы программирования:
